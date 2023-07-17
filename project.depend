@@ -1,0 +1,30 @@
+# depslib dependency file v1.0
+1689369963 source:c:\users\koola\onedrive - manit.ac.in\documents\sqlc\project\main.cpp
+	<iostream>
+	<winsock2.h>
+	<mysql.h>
+	<string>
+
+1689080036 c:\program files (x86)\dev-cpp\mingw64\include\mysql.h
+	<sys/types.h>
+	<winsock.h>
+	"mysql_com.h"
+	"mysql_time.h"
+	"mysql_version.h"
+	"typelib.h"
+	"my_list.h"
+	"my_alloc.h"
+
+1689080036 c:\program files (x86)\dev-cpp\mingw64\include\mysql_com.h
+
+1689080036 c:\program files (x86)\dev-cpp\mingw64\include\mysql_time.h
+
+1689080036 c:\program files (x86)\dev-cpp\mingw64\include\mysql_version.h
+	<custom_conf.h>
+
+1689080036 c:\program files (x86)\dev-cpp\mingw64\include\typelib.h
+
+1689080036 c:\program files (x86)\dev-cpp\mingw64\include\my_list.h
+
+1689080036 c:\program files (x86)\dev-cpp\mingw64\include\my_alloc.h
+
