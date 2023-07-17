@@ -67,5 +67,6 @@ This project is licensed under the MIT License. You can find the details in the 
 For any questions or suggestions, please feel free to contact the project maintainer:
 
 Name: Aditya Prajapati
+
 Email: adityaprajapati1702@gmail.com
 
