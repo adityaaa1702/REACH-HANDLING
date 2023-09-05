@@ -63,6 +63,11 @@ void insertIntoGeneralTable(MYSQL* conn)
                          twitterFollowersStr + "', '" +
                          youtubeSubscribersStr + "')";
 
+
+    // INSERT INTO general (UserID, Name, InstagramFollowers, TwitterFollowers, YouTubeSubscribers)
+   // VALUES (userID, 'name', 'instagramFollowers', 'twitterFollowers', 'youtubeSubscribers')
+
+
     int queryResult = mysql_query(conn, insertQuery.c_str());
     if (queryResult != 0)
     {
@@ -614,11 +619,102 @@ void selectTableToAddData(MYSQL* conn)
         }
     }
 }
+// Function to fetch and display information based on followers' range
+void promoteAd(MYSQL* conn)
+{
+    string platformChoice;
+    string minFollowersStr, maxFollowersStr;
+    float minFollowers, maxFollowers;
 
+    cout << "Which platform do you want to promote?\n";
+    cout << "1. Instagram\n";
+    cout << "2. Twitter\n";
+    cout << "3. YouTube\n";
+    cout << "Enter the corresponding number: ";
+    getline(cin, platformChoice);
 
+    string tableName; // To store the selected table name
 
+    switch (platformChoice[0])
+    {
+        case '1':
+            tableName = "instagram";
+            break;
+        case '2':
+            tableName = "twitter";
+            break;
+        case '3':
+            tableName = "youtube";
+            break;
+        default:
+            cout << "Invalid platform choice. Promotion failed.\n";
+            return;
+    }
 
+    cout << "Enter the minimum number of followers/subscribers: ";
+    getline(cin, minFollowersStr);
 
+    cout << "Enter the maximum number of followers/subscribers: ";
+    getline(cin, maxFollowersStr);
+
+    // Convert input strings to floats
+    minFollowers = stof(minFollowersStr);
+    maxFollowers = stof(maxFollowersStr);
+
+    // Define column names for YouTube table
+    string followersColumn, usernameColumn;
+    if (tableName == "youtube")
+    {
+        followersColumn = "Subscribers";
+        usernameColumn = "ChannelName";
+    }
+    else
+    {
+        // For Instagram and Twitter, continue using "Followers" and "Username" columns
+        followersColumn = "Followers";
+        usernameColumn = "Username";
+    }
+
+    // Query to fetch information from the selected table based on followers' range
+    string selectQuery = "SELECT UserID, " + followersColumn + ", " + usernameColumn + ", Content FROM " + tableName
+                        + " WHERE " + followersColumn + " >= " + to_string(minFollowers)
+                        + " AND " + followersColumn + " <= " + to_string(maxFollowers);
+
+    int queryResult = mysql_query(conn, selectQuery.c_str());
+
+    if (queryResult != 0)
+    {
+        cout << "Failed to fetch data from the table: " << mysql_error(conn) << endl;
+        return;
+    }
+
+    MYSQL_RES* result = mysql_store_result(conn);
+
+    if (result)
+    {
+        // Fetch and display data from the table
+        MYSQL_ROW row;
+        while ((row = mysql_fetch_row(result)))
+        {
+            int userID = atoi(row[0]);
+            float followers = atof(row[1]);
+            string username = row[2];
+            string content = row[3];
+
+            cout << "UserID: " << userID << endl;
+            cout << "Followers/Subscribers: " << followers <<"M"<< endl;
+            cout << "Username/ChannelName: " << username << endl;
+            cout << "Content: " << content << endl;
+            cout << "---------------------------" << endl;
+        }
+
+        mysql_free_result(result);
+    }
+    else
+    {
+        cout << "No data found in the " << tableName << " table for the specified followers' range." << endl;
+    }
+}
 
 
 int main()
@@ -636,16 +732,29 @@ int main()
     bool proceed = true;
     while (proceed)
     {
-        selectTableToAddData(conn);
-
-        cout << "Do you want to add/update/delete more data? (Y/N): ";
+        cout << "Choose an option:\n";
+        cout << "1. Select a table to add/update/delete data\n";
+        cout << "2. Promote Ad\n";
+        cout << "3. Exit\n";
+        cout << "Enter the corresponding number: ";
         char choice;
         cin >> choice;
         cin.ignore();
 
-        if (choice == 'N' || choice == 'n')
+        switch (choice)
         {
-            proceed = false;
+            case '1':
+                selectTableToAddData(conn);
+                break;
+            case '2':
+                promoteAd(conn);
+                break;
+            case '3':
+                proceed = false;
+                break;
+            default:
+                cout << "Invalid choice. Please try again.\n";
+                break;
         }
     }
 
@@ -653,4 +762,3 @@ int main()
 
     return 0;
 }
-
